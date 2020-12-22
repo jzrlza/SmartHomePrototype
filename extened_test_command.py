@@ -2,30 +2,30 @@
 current_time = 0
 
 time_dict = {
-        "เที่ยงคืน": "0:00",
-        "ตีหนึ่ง": "1:00",
-        "ตีสอง": "2:00",
-        "ตีสาม": "3:00",
-        "ตีสี่": "4:00",
-        "ตีห้า": "5:00",
-        "หกโมงเช้า": "6:00",
-        "เจ็ดโมง": "7:00",
-        "แปดโมง": "8:00",
-        "เก้าโมง": "9:00",
-        "สิบโมง": "10:00",
-        "สิบเอ็ดโมง": "11:00",
-        "เที่ยงวัน": "12:00",
-        "บ่ายโมง": "13:00",
-        "บ่ายสอง": "14:00",
-        "บ่ายสาม": "15:00",
-        "สี่โมง": "16:00",
-        "ห้าโมง": "17:00",
-        "หกโมงเย็น": "18:00",
-        "หนึ่งทุ่ม": "19:00",
-        "สองทุ่ม": "20:00",
-        "สามทุ่ม": "21:00",
-        "สี่ทุ่ม": "22:00",
-        "ห้าทุ่ม": "23:00"
+        "เที่ยงคืน": 0,
+        "ตีหนึ่ง": 1,
+        "ตีสอง": 2,
+        "ตีสาม": 3,
+        "ตีสี่": 4,
+        "ตีห้า": 5,
+        "หกโมงเช้า": 6,
+        "เจ็ดโมง": 7,
+        "แปดโมง": 8,
+        "เก้าโมง": 9,
+        "สิบโมง": 10,
+        "สิบเอ็ดโมง": 11,
+        "เที่ยงวัน": 12,
+        "บ่ายโมง": 13,
+        "บ่ายสอง": 14,
+        "บ่ายสาม": 15,
+        "สี่โมง": 16,
+        "ห้าโมง": 17,
+        "หกโมงเย็น": 18,
+        "หนึ่งทุ่ม": 19,
+        "สองทุ่ม": 20,
+        "สามทุ่ม": 21,
+        "สี่ทุ่ม": 22,
+        "ห้าทุ่ม": 23
     }
 
 class House:
@@ -74,9 +74,11 @@ class House:
         #Scheduler, optional one
         global time_dict
         time_cmd = ""
+        time_cmd_hour = 0
         for time in time_dict:
             if time in str_command:
                 time_cmd = time
+                time_cmd_hour = time_dict[time]
                 break
         
         #End if required texts are not present
@@ -95,7 +97,13 @@ class House:
             self.trigger_light(command, obj_target, room_name)
         else:
             #append time
-            print("Scheduled!")
+            self.scheduled_times.append({
+                    "command": command,
+                    "obj_target": obj_target,
+                    "room_name": room_name,
+                    "time_cmd_hour": time_cmd_hour
+                })
+            print(f"Scheduled : %s, %s, %s, %d:00" % (command, obj_target, room_name, time_cmd_hour))
             return
 
         print("Done!")
@@ -122,7 +130,15 @@ class House:
         else :
             current_time = 0
         print(f"An hour has passed, now %d:00." % (current_time))
+        
         #if reached the schedule, trigger light
+        for schedule in self.scheduled_times:
+            if current_time == schedule["time_cmd_hour"] :
+                command = schedule["command"]
+                obj_target = schedule["obj_target"]
+                room_name = schedule["room_name"]
+                self.trigger_light(command, obj_target, room_name)
+                print("Scheduled operation complete!")
         
 
 class Room:
@@ -214,11 +230,15 @@ house.progress_an_hour()
 house.print_all_rooms_stages()
 print()
 
+house.command("เปิดน้ำห้องน้ำตอนเจ็ดโมงเช้าหน่อย")
+
 print()
 print("Stage 6")
 house.progress_an_hour()
 house.print_all_rooms_stages()
 print()
+
+house.command("ปิดน้ำห้องน้ำตอนแปดโมงเช้าหน่อย")
 
 print()
 print("Stage 7")
