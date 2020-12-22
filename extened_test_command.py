@@ -35,7 +35,7 @@ class House:
 
     obj_lists = {
             "ไฟ": "light",
-            "น้ำ": "water"
+            "ก๊อกน้ำ": "water"
         }
 
     def __init__(self, owner_name):
@@ -116,7 +116,7 @@ class House:
 
     def display_time(self):
         global current_time
-        print(f"Now %d:00.", current_time)
+        print(f"Now %d:00." % (current_time))
 
     def progress_an_hour(self):
         global current_time
@@ -212,6 +212,7 @@ house.command("อะไร")
 house.command("ห้องครัว")
 house.command("ปิดไฟ")
 house.command("เปิดห้องนอน")
+house.command("เปิดห้องก๊อกน้ำ")
 
 print()
 print("Stage 4")
@@ -228,7 +229,8 @@ house.progress_an_hour()
 house.print_all_rooms_stages()
 print()
 
-house.command("เปิดน้ำห้องน้ำตอนเจ็ดโมงเช้าหน่อย")
+house.command("เปิดก๊อกน้ำห้องน้ำตอนเจ็ดโมงเช้าหน่อย")
+house.command("เปิดก๊อกน้ำห้องครัวตอนแปดโมงเช้าหน่อย")
 
 print()
 print("Stage 6")
@@ -236,7 +238,7 @@ house.progress_an_hour()
 house.print_all_rooms_stages()
 print()
 
-house.command("ปิดน้ำห้องน้ำตอนแปดโมงเช้าหน่อย")
+house.command("ปิดก๊อกน้ำห้องน้ำตอนแปดโมงเช้าหน่อย")
 
 print()
 print("Stage 7")
