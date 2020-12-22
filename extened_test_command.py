@@ -82,14 +82,8 @@ class House:
                 break
         
         #End if required texts are not present
-        if command == "" and room_name == "":
-            print("Invalid Command and Room!")
-            return
-        if command == "":
-            print("Invalid Command!")
-            return
-        if room_name == "":
-            print("Invalid Room!")
+        if (command == "") or (obj_target == "") or (room_name == ""):
+            print("Invalid Command")
             return
 
         #simple trigger without scheduled time
@@ -138,7 +132,7 @@ class House:
                 obj_target = schedule["obj_target"]
                 room_name = schedule["room_name"]
                 self.trigger_light(command, obj_target, room_name)
-                print("Scheduled operation complete!")
+                print("Time : Scheduled operation complete!")
         
 
 class Room:
@@ -214,6 +208,7 @@ house.command("หน่อย")
 house.command("อะไร")
 house.command("ห้องครัว")
 house.command("ปิดไฟ")
+house.command("เปิดห้องนอน")
 
 print()
 print("Stage 4")
