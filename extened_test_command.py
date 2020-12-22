@@ -1,17 +1,42 @@
-current_time = 6
+#time in hour format, range 0 to 23
+current_time = 0
 
 time_dict = {
         "เที่ยงคืน": "0:00",
         "ตีหนึ่ง": "1:00",
-        "เจ็ดโมงเช้า": "7:00",
+        "ตีสอง": "2:00",
+        "ตีสาม": "3:00",
+        "ตีสี่": "4:00",
+        "ตีห้า": "5:00",
+        "หกโมงเช้า": "6:00",
+        "เจ็ดโมง": "7:00",
+        "แปดโมง": "8:00",
+        "เก้าโมง": "9:00",
+        "สิบโมง": "10:00",
+        "สิบเอ็ดโมง": "11:00",
+        "เที่ยงวัน": "12:00",
         "บ่ายโมง": "13:00",
-        "สามทุ่ม": "21:00"
+        "บ่ายสอง": "14:00",
+        "บ่ายสาม": "15:00",
+        "สี่โมง": "16:00",
+        "ห้าโมง": "17:00",
+        "หกโมงเย็น": "18:00",
+        "หนึ่งทุ่ม": "19:00",
+        "สองทุ่ม": "20:00",
+        "สามทุ่ม": "21:00",
+        "สี่ทุ่ม": "22:00",
+        "ห้าทุ่ม": "23:00"
     }
 
 class House:
     owner_name = ""
     rooms = {}
     scheduled_times = []
+
+    obj_lists = {
+            "ไฟ": "light",
+            "น้ำ": "water"
+        }
 
     def __init__(self, owner_name):
         self.owner_name = owner_name
@@ -25,12 +50,19 @@ class House:
         print("Reading command : "+str_command)
         #Command reading, only works if the required words are at the start.
         command = ""
-        command_open_index = str_command.find("เปิดไฟ")
-        command_close_index = str_command.find("ปิดไฟ")
+        command_open_index = str_command.find("เปิด")
+        command_close_index = str_command.find("ปิด")
         if command_open_index == 0 :
-            command = "turn_on_light"
+            command = "turn_on"
         if command_close_index == 0 :
-            command = "turn_off_light"
+            command = "turn_off"
+
+        #Object detector, in case there's more than just a light
+        obj_target = ""
+        for obj in self.obj_lists :
+            if obj in str_command:
+                obj_target = self.obj_lists[obj]
+                break
 
         #Room reading, it catches the first added rooms first.
         room_name = ""
@@ -60,19 +92,20 @@ class House:
 
         #simple trigger without scheduled time
         if time_cmd == "":
-            self.trigger_light(command, room_name)
+            self.trigger_light(command, obj_target, room_name)
         else:
             #append time
-            print("Scheduled")
+            print("Scheduled!")
+            return
 
         print("Done!")
 
-    def trigger_light(self, command, room_name):
+    def trigger_light(self, command, obj_target, room_name):
         target_room = self.rooms[room_name]
-        if command == "turn_on_light":
-            target_room.trigger_light_on()
-        elif command =="turn_off_light":
-            target_room.trigger_light_off()
+        if command == "turn_on":
+            target_room.trigger_on(obj_target)
+        elif command =="turn_off":
+            target_room.trigger_off(obj_target)
 
     def print_all_rooms_stages(self):
         for room in self.rooms :
@@ -80,7 +113,7 @@ class House:
 
     def display_time(self):
         global current_time
-        print("Now "+str(current_time)+":00.")
+        print(f"Now %d:00.", current_time)
 
     def progress_an_hour(self):
         global current_time
@@ -88,7 +121,7 @@ class House:
             current_time += 1
         else :
             current_time = 0
-        print("An hour has passed, now "+str(current_time)+":00.")
+        print(f"An hour has passed, now %d:00." % (current_time))
         #if reached the schedule, trigger light
         
 
@@ -96,22 +129,39 @@ class Room:
     room_name = ""
     room_str = ""
     light_open = False
+    water_open = False
 
     def __init__(self, room_name, room_str):
         self.room_name = room_name
         self.room_str = room_str
 
-    def trigger_light_on(self):
-        self.light_open = True
+    def trigger_on(self, obj):
+        if obj == "light" :
+            self.light_open = True
+        elif obj == "water":
+            self.water_open = True
 
-    def trigger_light_off(self):
-        self.light_open = False
+    def trigger_off(self, obj):
+        if obj == "light" :
+            self.light_open = False
+        elif obj == "water":
+            self.water_open = False
 
     def print_stage(self):
+        light_status = ""
+        water_status = ""
+        
         if self.light_open :
-            print(self.room_name+" : light on")
+            light_status = "on"
         else :
-            print(self.room_name+" : light off")
+            light_status = "off"
+            
+        if self.water_open :
+            water_status = "on"
+        else :
+            water_status = "off"
+            
+        print(f"%s : light %s, water %s" % (self.room_name, light_status, water_status))
 
 
 house = House("My House")
@@ -151,6 +201,39 @@ house.command("ปิดไฟ")
 
 print()
 print("Stage 4")
+house.progress_an_hour()
+house.print_all_rooms_stages()
+print()
+
+house.command("เปิดไฟห้องนอนตอนหกโมงเช้าหน่อย")
+house.command("เปิดไฟห้องน้ำตอนเจ็ดโมงเช้าหน่อย")
+
+print()
+print("Stage 5")
+house.progress_an_hour()
+house.print_all_rooms_stages()
+print()
+
+print()
+print("Stage 6")
+house.progress_an_hour()
+house.print_all_rooms_stages()
+print()
+
+print()
+print("Stage 7")
+house.progress_an_hour()
+house.print_all_rooms_stages()
+print()
+
+print()
+print("Stage 8")
+house.progress_an_hour()
+house.print_all_rooms_stages()
+print()
+
+print()
+print("Stage 9")
 house.progress_an_hour()
 house.print_all_rooms_stages()
 print()
