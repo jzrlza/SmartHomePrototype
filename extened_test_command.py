@@ -60,13 +60,19 @@ class House:
 
         #simple trigger without scheduled time
         if time_cmd == "":
-            target_room = self.rooms[room_name]
-            if command == "turn_on_light":
-                target_room.trigger_light_on()
-            elif command =="turn_off_light":
-                target_room.trigger_light_off()
+            self.trigger_light(command, room_name)
+        else:
+            #append time
+            print("Scheduled")
 
         print("Done!")
+
+    def trigger_light(self, command, room_name):
+        target_room = self.rooms[room_name]
+        if command == "turn_on_light":
+            target_room.trigger_light_on()
+        elif command =="turn_off_light":
+            target_room.trigger_light_off()
 
     def print_all_rooms_stages(self):
         for room in self.rooms :
@@ -83,6 +89,7 @@ class House:
         else :
             current_time = 0
         print("An hour has passed, now "+str(current_time)+":00.")
+        #if reached the schedule, trigger light
         
 
 class Room:
