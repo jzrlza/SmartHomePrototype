@@ -1,4 +1,4 @@
-current_time = 0
+current_time = 6
 
 time_dict = {
         "เที่ยงคืน": "0:00",
@@ -11,6 +11,7 @@ time_dict = {
 class House:
     owner_name = ""
     rooms = {}
+    scheduled_times = []
 
     def __init__(self, owner_name):
         self.owner_name = owner_name
@@ -70,6 +71,18 @@ class House:
     def print_all_rooms_stages(self):
         for room in self.rooms :
             self.rooms[room].print_stage()
+
+    def display_time(self):
+        global current_time
+        print("Now "+str(current_time)+":00.")
+
+    def progress_an_hour(self):
+        global current_time
+        if current_time < 24:
+            current_time += 1
+        else :
+            current_time = 0
+        print("An hour has passed, now "+str(current_time)+":00.")
         
 
 class Room:
@@ -103,6 +116,7 @@ print(house.owner_name)
 
 print()
 print("Stage 1")
+house.display_time()
 house.print_all_rooms_stages()
 print()
 
@@ -110,6 +124,7 @@ house.command("เปิดไฟห้องนอนหน่อย")
 
 print()
 print("Stage 2")
+house.progress_an_hour()
 house.print_all_rooms_stages()
 print()
 
@@ -118,6 +133,7 @@ house.command("เปิดไฟห้องครัวหน่อย")
 
 print()
 print("Stage 3")
+house.progress_an_hour()
 house.print_all_rooms_stages()
 print()
 
@@ -128,5 +144,6 @@ house.command("ปิดไฟ")
 
 print()
 print("Stage 4")
+house.progress_an_hour()
 house.print_all_rooms_stages()
 print()
