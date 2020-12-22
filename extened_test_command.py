@@ -88,9 +88,9 @@ class House:
 
         #simple trigger without scheduled time
         if time_cmd == "":
-            self.trigger_light(command, obj_target, room_name)
+            self.trigger(command, obj_target, room_name)
         else:
-            #append time
+            #scheduled time, by append time
             self.scheduled_times.append({
                     "command": command,
                     "obj_target": obj_target,
@@ -102,7 +102,8 @@ class House:
 
         print("Done!")
 
-    def trigger_light(self, command, obj_target, room_name):
+    def trigger(self, command, obj_target, room_name):
+        #command, obj_target, room_name, are all strings
         target_room = self.rooms[room_name]
         if command == "turn_on":
             target_room.trigger_on(obj_target)
@@ -131,7 +132,7 @@ class House:
                 command = schedule["command"]
                 obj_target = schedule["obj_target"]
                 room_name = schedule["room_name"]
-                self.trigger_light(command, obj_target, room_name)
+                self.trigger(command, obj_target, room_name)
                 print("Time : Scheduled operation complete!")
         
 
@@ -146,12 +147,14 @@ class Room:
         self.room_str = room_str
 
     def trigger_on(self, obj):
+        #obj is a string
         if obj == "light" :
             self.light_open = True
         elif obj == "water":
             self.water_open = True
 
     def trigger_off(self, obj):
+        #obj is a string
         if obj == "light" :
             self.light_open = False
         elif obj == "water":
